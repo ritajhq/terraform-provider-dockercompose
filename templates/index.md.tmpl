@@ -1,0 +1,25 @@
+---
+page_title: "dockercompose Provider"
+subcategory: ""
+description: |-
+  Manage Docker Compose stacks as Terraform resources. Define multi-container applications in HCL, deploy to local or remote Docker hosts via SSH/TCP/Unix socket, and get full lifecycle management with comprehensive Docker Compose v3 spec coverage.
+---
+
+# dockercompose Provider
+
+The `dockercompose` provider lets you manage Docker Compose stacks declaratively from Terraform. Instead of treating every container, network, and volume as a separate resource, a whole Compose stack is one Terraform resource — preserving Compose's native dependency graph, healthcheck-aware startup, and project isolation.
+
+**Use cases:** homelab and self-hosted apps, edge / single-node production deployments over SSH, ephemeral CI/CD environments, dev environments as code, and migrating existing `docker-compose.yml` files into IaC without rewriting them.
+
+**Two resource types:**
+
+- [`dockercompose_stack`](resources/stack.md) — full HCL-modeled services, networks, volumes, configs, and secrets. Use this for new stacks where you want type-safe Terraform attributes.
+- [`dockercompose_project`](resources/project.md) — point at an existing `docker-compose.yml` file or pass inline YAML. Use this to migrate legacy Compose files or generate YAML dynamically with `templatefile()`.
+
+**Connection options:** local Docker socket (default), remote host via SSH (`ssh://user@host`), TCP with TLS (`tcp://host:2376`), or any value supported by the `DOCKER_HOST` environment variable.
+
+## Example Usage
+
+{{ tffile "examples/provider/provider.tf" }}
+
+{{ .SchemaMarkdown | trimspace }}
