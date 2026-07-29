@@ -53,6 +53,7 @@ func Provider() *schema.Provider {
 		ResourcesMap: map[string]*schema.Resource{
 			"dockercompose_stack":   resourceComposeStack(),
 			"dockercompose_project": resourceComposeProject(),
+			"dockercompose_network": resourceComposeNetwork(),
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"dockercompose_project": dataSourceComposeProject(),

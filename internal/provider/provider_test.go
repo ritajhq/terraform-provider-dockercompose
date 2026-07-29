@@ -64,7 +64,7 @@ func TestProviderSchemaDefaults(t *testing.T) {
 func TestProviderResources(t *testing.T) {
 	p := Provider()
 
-	expectedResources := []string{"dockercompose_stack", "dockercompose_project"}
+	expectedResources := []string{"dockercompose_stack", "dockercompose_project", "dockercompose_network"}
 	for _, name := range expectedResources {
 		if _, ok := p.ResourcesMap[name]; !ok {
 			t.Errorf("provider missing resource %q", name)
@@ -263,7 +263,7 @@ func TestNetworkSchemaComplete(t *testing.T) {
 	ns := networkSchema()
 
 	expectedFields := []string{
-		"name", "driver", "driver_opts", "external", "internal",
+		"name", "external_name", "driver", "driver_opts", "external", "internal",
 		"attachable", "labels", "ipam_driver", "ipam_subnet", "ipam_gateway",
 	}
 

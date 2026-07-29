@@ -626,6 +626,38 @@ func TestBuildComposeFileWithExternalNetwork(t *testing.T) {
 	}
 }
 
+func TestBuildComposeFileWithExternalNetworkName(t *testing.T) {
+	d := makeResourceData(t, map[string]string{
+		"name":                    "test-ext-net-name",
+		"service.#":               "1",
+		"service.0.name":          "web",
+		"service.0.image":         "nginx:latest",
+		"network.#":               "1",
+		"network.0.name":          "shared_net",
+		"network.0.external":      "true",
+		"network.0.external_name": "shared_net",
+	})
+
+	cf := buildComposeFile(d)
+	net := cf.Networks["shared_net"]
+
+	if !net.External {
+		t.Error("expected external=true")
+	}
+	if net.Name != "shared_net" {
+		t.Errorf("expected Name=shared_net, got %q", net.Name)
+	}
+
+	yamlBytes, err := docker.MarshalComposeFile(cf)
+	if err != nil {
+		t.Fatalf("MarshalComposeFile error: %s", err)
+	}
+	output := string(yamlBytes)
+	if !strings.Contains(output, "name: shared_net") {
+		t.Errorf("YAML missing pinned network name:\n%s", output)
+	}
+}
+
 func TestBuildComposeFileWithVolume(t *testing.T) {
 	d := makeResourceData(t, map[string]string{
 		"name":            "test-vol",

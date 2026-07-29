@@ -87,3 +87,15 @@ func getStrMap(m map[string]interface{}, key string) map[string]string {
 	}
 	return nil
 }
+
+// toStrMap converts a raw map[string]interface{} (as returned directly by d.Get on a
+// TypeMap) into a map[string]string, skipping non-string values.
+func toStrMap(raw map[string]interface{}) map[string]string {
+	result := make(map[string]string, len(raw))
+	for k, v := range raw {
+		if s, ok := v.(string); ok {
+			result[k] = s
+		}
+	}
+	return result
+}

@@ -39,9 +39,10 @@ This provider takes the opposite approach: **a stack is one resource**. You writ
 ## Features
 
 - **Remote host support** - connect via SSH, TCP, or Unix socket (like the Docker provider)
-- **Two resource types**:
+- **Three resource types**:
   - `dockercompose_stack` - full HCL-modeled services, networks, volumes, configs, secrets
   - `dockercompose_project` - use existing `docker-compose.yml` files or inline YAML
+  - `dockercompose_network` - standalone Docker network shared across multiple stacks, unaffected by Compose's per-project name prefixing
 - **Comprehensive service config** - ports, volumes, environment, healthchecks, deploy resources, logging, security options, sysctls, devices, and 50+ other Docker Compose fields
 - **Network & volume management** - drivers, IPAM, external references, labels, driver options
 - **Docker configs & secrets** - top-level config/secret definitions
@@ -500,6 +501,50 @@ resource "dockercompose_project" "dynamic" {
 | `remove_volumes_on_destroy` | bool | Remove volumes on destroy |
 | `yaml_sha256` | string | (computed) SHA256 of YAML content |
 | `container` | list | (computed) Container runtime info - same schema as `dockercompose_stack` |
+
+### `dockercompose_network`
+
+A standalone Docker network (`docker network create`), independent of any `dockercompose_stack`'s compose project. Use it to share a network across multiple stacks — Compose prefixes every network declared inside a stack's `network` block with `<project>_`, so two stacks can't join "the same" network just by declaring matching blocks. Create it here instead, then have each stack join it as `external`, pointing `external_name` at this resource's `name` to pin the literal Docker network name.
+
+```hcl
+resource "dockercompose_network" "shared" {
+  name       = "shared_net"
+  driver     = "bridge"
+  attachable = true
+}
+
+resource "dockercompose_stack" "api" {
+  name = "api-stack"
+
+  service {
+    name     = "api"
+    image    = "myapp/api:latest"
+    networks = ["shared_net"]
+  }
+
+  network {
+    name          = "shared_net"
+    external      = true
+    external_name = dockercompose_network.shared.name
+  }
+
+  depends_on = [dockercompose_network.shared]
+}
+```
+
+| Attribute | Type | Description |
+|-----------|------|-------------|
+| `name` | string | Literal Docker network name, not project-prefixed (required, ForceNew) |
+| `driver` | string | Network driver: bridge, overlay, host, none (ForceNew) |
+| `driver_opts` | map(string) | Driver-specific options (ForceNew) |
+| `internal` | bool | Restrict external access (ForceNew) |
+| `attachable` | bool | Allow manual container attachment (ForceNew) |
+| `labels` | map(string) | Network labels (ForceNew) |
+| `ipam_driver` | string | IPAM driver (ForceNew) |
+| `ipam_subnet` | string | IPAM subnet, e.g. `172.28.0.0/16` (ForceNew) |
+| `ipam_gateway` | string | IPAM gateway, e.g. `172.28.0.1` (ForceNew) |
+
+All attributes are `ForceNew` — Docker networks can't be modified in place, so any change destroys and recreates the network. Destroying it while a stack still references it as `external` fails at the engine level ("network has active endpoints"); add `depends_on = [dockercompose_network.x]` on each referencing stack so Terraform tears stacks down first.
 
 ## How It Works
 

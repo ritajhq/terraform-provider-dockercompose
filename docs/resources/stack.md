@@ -310,7 +310,7 @@ Required:
 
 Required:
 
-- `name` (String) Network name.
+- `name` (String) Network key within the compose file.
 
 Optional:
 
@@ -318,6 +318,7 @@ Optional:
 - `driver` (String) Network driver (bridge, overlay, host, none).
 - `driver_opts` (Map of String) Driver-specific options.
 - `external` (Boolean) Use externally created network.
+- `external_name` (String) Literal Docker network name to use (Compose's top-level `name:` field), bypassing the `<project>_` prefix. Set this to the `name` of a dockercompose_network resource when joining a network shared across stacks (combine with external = true).
 - `internal` (Boolean) Restrict external access.
 - `ipam_driver` (String) IPAM driver.
 - `ipam_gateway` (String) IPAM gateway (e.g. '172.28.0.1').

@@ -248,6 +248,76 @@ func (c *DockerClient) DockerInspect(containerIDs ...string) (string, error) {
 	return strings.TrimSpace(stdout.String()), nil
 }
 
+// NetworkCreate runs `docker network create` with the given options, returning the
+// created network's ID.
+func (c *DockerClient) NetworkCreate(name, driver string, driverOpts map[string]string, internal, attachable bool, labels map[string]string, ipamDriver, ipamSubnet, ipamGateway string) (string, error) {
+	args := []string{"network", "create"}
+	if driver != "" {
+		args = append(args, "--driver", driver)
+	}
+	for k, v := range driverOpts {
+		args = append(args, "--opt", k+"="+v)
+	}
+	if internal {
+		args = append(args, "--internal")
+	}
+	if attachable {
+		args = append(args, "--attachable")
+	}
+	for k, v := range labels {
+		args = append(args, "--label", k+"="+v)
+	}
+	if ipamDriver != "" {
+		args = append(args, "--ipam-driver", ipamDriver)
+	}
+	if ipamSubnet != "" {
+		args = append(args, "--subnet", ipamSubnet)
+	}
+	if ipamGateway != "" {
+		args = append(args, "--gateway", ipamGateway)
+	}
+	args = append(args, name)
+
+	return c.docker(args...)
+}
+
+// NetworkRemove runs `docker network rm` for the given network name/ID.
+func (c *DockerClient) NetworkRemove(name string) (string, error) {
+	return c.docker("network", "rm", name)
+}
+
+// NetworkInspect runs `docker network inspect` on the given network name/ID and
+// returns the JSON output.
+func (c *DockerClient) NetworkInspect(name string) (string, error) {
+	return c.docker("network", "inspect", name)
+}
+
+// docker executes a plain `docker` CLI command (not `docker compose`) with remote
+// host support.
+func (c *DockerClient) docker(args ...string) (string, error) {
+	binary := c.Binary
+	if binary == "" {
+		binary = "docker"
+	}
+
+	cmd := exec.Command(binary, args...)
+
+	cmd.Env = os.Environ()
+	if c.Host != "" {
+		cmd.Env = append(cmd.Env, "DOCKER_HOST="+c.Host)
+	}
+
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	if err := cmd.Run(); err != nil {
+		return "", fmt.Errorf("docker %s: %s\n%s", strings.Join(args, " "), err, strings.TrimSpace(stderr.String()))
+	}
+
+	return strings.TrimSpace(stdout.String()), nil
+}
+
 // compose executes a docker compose command with project isolation and remote host support.
 func (c *DockerClient) compose(projectName, composeFile string, args ...string) (string, error) {
 	binary := c.Binary

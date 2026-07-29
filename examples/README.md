@@ -20,6 +20,7 @@ Smaller, single-feature examples used for the Terraform Registry docs:
 - [`provider/`](provider/) — minimal provider block (local socket and remote-host options)
 - [`resources/dockercompose_stack/`](resources/dockercompose_stack/) — full HCL stack template (Postgres + Grafana)
 - [`resources/dockercompose_project/`](resources/dockercompose_project/) — wrap an existing `docker-compose.yml` or pass inline YAML
+- [`resources/dockercompose_network/`](resources/dockercompose_network/) — network shared across multiple stacks
 - [`data-sources/dockercompose_project/`](data-sources/dockercompose_project/) — read runtime state of an existing project
 
 ## Running an example

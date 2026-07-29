@@ -264,16 +264,17 @@ func developWatchSchema() map[string]*schema.Schema {
 
 func networkSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
-		"name":         {Type: schema.TypeString, Required: true, Description: "Network name."},
-		"driver":       {Type: schema.TypeString, Optional: true, Description: "Network driver (bridge, overlay, host, none)."},
-		"driver_opts":  {Type: schema.TypeMap, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}, Description: "Driver-specific options."},
-		"external":     {Type: schema.TypeBool, Optional: true, Default: false, Description: "Use externally created network."},
-		"internal":     {Type: schema.TypeBool, Optional: true, Default: false, Description: "Restrict external access."},
-		"attachable":   {Type: schema.TypeBool, Optional: true, Default: false, Description: "Allow manual container attachment."},
-		"labels":       {Type: schema.TypeMap, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}, Description: "Network labels."},
-		"ipam_driver":  {Type: schema.TypeString, Optional: true, Description: "IPAM driver."},
-		"ipam_subnet":  {Type: schema.TypeString, Optional: true, Description: "IPAM subnet (e.g. '172.28.0.0/16')."},
-		"ipam_gateway": {Type: schema.TypeString, Optional: true, Description: "IPAM gateway (e.g. '172.28.0.1')."},
+		"name":          {Type: schema.TypeString, Required: true, Description: "Network key within the compose file."},
+		"external_name": {Type: schema.TypeString, Optional: true, Description: "Literal Docker network name to use (Compose's top-level `name:` field), bypassing the `<project>_` prefix. Set this to the `name` of a dockercompose_network resource when joining a network shared across stacks (combine with external = true)."},
+		"driver":        {Type: schema.TypeString, Optional: true, Description: "Network driver (bridge, overlay, host, none)."},
+		"driver_opts":   {Type: schema.TypeMap, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}, Description: "Driver-specific options."},
+		"external":      {Type: schema.TypeBool, Optional: true, Default: false, Description: "Use externally created network."},
+		"internal":      {Type: schema.TypeBool, Optional: true, Default: false, Description: "Restrict external access."},
+		"attachable":    {Type: schema.TypeBool, Optional: true, Default: false, Description: "Allow manual container attachment."},
+		"labels":        {Type: schema.TypeMap, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}, Description: "Network labels."},
+		"ipam_driver":   {Type: schema.TypeString, Optional: true, Description: "IPAM driver."},
+		"ipam_subnet":   {Type: schema.TypeString, Optional: true, Description: "IPAM subnet (e.g. '172.28.0.0/16')."},
+		"ipam_gateway":  {Type: schema.TypeString, Optional: true, Description: "IPAM gateway (e.g. '172.28.0.1')."},
 	}
 }
 
@@ -641,6 +642,7 @@ func buildComposeFile(d *schema.ResourceData) *docker.ComposeFile {
 			name := net["name"].(string)
 
 			nc := &docker.NetworkConfig{
+				Name:       getStr(net, "external_name"),
 				Driver:     getStr(net, "driver"),
 				DriverOpts: getStrMap(net, "driver_opts"),
 				External:   getBool(net, "external"),

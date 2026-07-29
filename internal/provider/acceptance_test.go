@@ -1,6 +1,7 @@
 package provider
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -115,6 +116,39 @@ func TestAccStackWithNetwork(t *testing.T) {
 					resource.TestCheckResourceAttr("dockercompose_stack.nettest", "container.#", "1"),
 					resource.TestCheckResourceAttr("dockercompose_stack.nettest", "container.0.network_settings.#", "1"),
 					resource.TestCheckResourceAttrSet("dockercompose_stack.nettest", "container.0.network_settings.0.ip_address"),
+				),
+			},
+		},
+	})
+}
+
+// TestAccNetworkSharedAcrossStacks verifies the motivating use case for
+// dockercompose_network: two independent stacks both joining the same
+// literal Docker network (via external + external_name), rather than each
+// getting its own project-prefixed network of the same short name.
+func TestAccNetworkSharedAcrossStacks(t *testing.T) {
+	resource.Test(t, resource.TestCase{
+		PreCheck:  func() { testAccPreCheck(t) },
+		Providers: testAccProviders,
+		CheckDestroy: resource.ComposeTestCheckFunc(
+			testAccCheckStackDestroy("acc-shared-a"),
+			testAccCheckStackDestroy("acc-shared-b"),
+			testAccCheckNetworkDestroy("acc_shared_net"),
+		),
+		Steps: []resource.TestStep{
+			{
+				Config: testAccConfigSharedNetwork(),
+				Check: resource.ComposeTestCheckFunc(
+					resource.TestCheckResourceAttr("dockercompose_network.shared", "name", "acc_shared_net"),
+					testAccCheckNetworkExists("acc_shared_net"),
+					testAccCheckStackRunning("acc-shared-a"),
+					testAccCheckStackRunning("acc-shared-b"),
+					// Both stacks' generated YAML pin the same literal network name,
+					// instead of letting Compose derive a project-prefixed one.
+					testAccCheckYAMLContains("dockercompose_stack.a", "name: acc_shared_net"),
+					testAccCheckYAMLContains("dockercompose_stack.b", "name: acc_shared_net"),
+					// The network itself should show endpoints from both stacks' containers.
+					testAccCheckNetworkContainerCount("acc_shared_net", 2),
 				),
 			},
 		},
@@ -590,6 +624,55 @@ func testAccCheckStackDestroy(projectName string) resource.TestCheckFunc {
 	}
 }
 
+func testAccCheckNetworkExists(name string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		client := &docker.DockerClient{Binary: "docker"}
+		if _, err := client.NetworkInspect(name); err != nil {
+			return fmt.Errorf("network %q does not exist: %s", name, err)
+		}
+		return nil
+	}
+}
+
+func testAccCheckNetworkDestroy(name string) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		client := &docker.DockerClient{Binary: "docker"}
+		if _, err := client.NetworkInspect(name); err == nil {
+			return fmt.Errorf("network %q still exists after destroy", name)
+		}
+		return nil
+	}
+}
+
+// testAccCheckNetworkContainerCount verifies how many containers currently have an
+// endpoint on the given network, used to confirm multiple stacks actually joined
+// the same shared network rather than each getting its own.
+func testAccCheckNetworkContainerCount(name string, want int) resource.TestCheckFunc {
+	return func(s *terraform.State) error {
+		client := &docker.DockerClient{Binary: "docker"}
+		out, err := client.NetworkInspect(name)
+		if err != nil {
+			return fmt.Errorf("network %q inspect failed: %s", name, err)
+		}
+
+		var inspected []struct {
+			Containers map[string]interface{} `json:"Containers"`
+		}
+		if err := json.Unmarshal([]byte(out), &inspected); err != nil {
+			return fmt.Errorf("error parsing network inspect output for %q: %s", name, err)
+		}
+		if len(inspected) == 0 {
+			return fmt.Errorf("network %q not found in inspect output", name)
+		}
+
+		got := len(inspected[0].Containers)
+		if got != want {
+			return fmt.Errorf("network %q: got %d attached containers, want %d", name, got, want)
+		}
+		return nil
+	}
+}
+
 // testAccCheckWatchPIDAlive verifies that watch_pid in state points at a live process.
 func testAccCheckWatchPIDAlive(resourceName string) resource.TestCheckFunc {
 	return func(s *terraform.State) error {
@@ -825,6 +908,52 @@ resource "dockercompose_stack" "nettest" {
     name   = "mynet"
     driver = "bridge"
   }
+}
+`
+}
+
+func testAccConfigSharedNetwork() string {
+	return `
+resource "dockercompose_network" "shared" {
+  name       = "acc_shared_net"
+  driver     = "bridge"
+  attachable = true
+}
+
+resource "dockercompose_stack" "a" {
+  name = "acc-shared-a"
+
+  service {
+    name     = "web"
+    image    = "nginx:alpine"
+    networks = ["acc_shared_net"]
+  }
+
+  network {
+    name          = "acc_shared_net"
+    external      = true
+    external_name = dockercompose_network.shared.name
+  }
+
+  depends_on = [dockercompose_network.shared]
+}
+
+resource "dockercompose_stack" "b" {
+  name = "acc-shared-b"
+
+  service {
+    name     = "web"
+    image    = "nginx:alpine"
+    networks = ["acc_shared_net"]
+  }
+
+  network {
+    name          = "acc_shared_net"
+    external      = true
+    external_name = dockercompose_network.shared.name
+  }
+
+  depends_on = [dockercompose_network.shared]
 }
 `
 }
