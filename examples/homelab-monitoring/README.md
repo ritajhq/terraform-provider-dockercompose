@@ -1,6 +1,6 @@
 # Homelab Monitoring Stack (Prometheus + Grafana + Loki) with Terraform
 
-Full observability stack for your homelab or single-node deployment, defined in Terraform via the `xRizur/dockercompose` provider. Three services, configured to discover each other automatically — Prometheus scrapes itself + Grafana + Loki, and Grafana can immediately add Prometheus and Loki as data sources.
+Full observability stack for your homelab or single-node deployment, defined in Terraform via the `ritajhq/dockercompose` provider. Three services, configured to discover each other automatically — Prometheus scrapes itself + Grafana + Loki, and Grafana can immediately add Prometheus and Loki as data sources.
 
 **What you get:**
 

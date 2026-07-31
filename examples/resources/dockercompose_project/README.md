@@ -38,4 +38,4 @@ terraform destroy
 ## Related
 
 - [`dockercompose_stack` example](../dockercompose_stack/) — same workload modeled as HCL instead of YAML
-- [Full attribute reference](https://registry.terraform.io/providers/xRizur/dockercompose/latest/docs/resources/project)
+- [Full attribute reference](https://registry.terraform.io/providers/ritajhq/dockercompose/latest/docs/resources/project)

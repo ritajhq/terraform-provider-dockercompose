@@ -12,7 +12,7 @@ Spin up a complete WordPress site with MySQL backend in one `terraform apply`. T
 
 ## Verified
 
-✅ Tested end-to-end on `2026-04-26` (Terraform 1.14.3, Docker 29.1.5, provider `xRizur/dockercompose` 1.1.x). `terraform apply` brings both containers to `running`, WordPress responds with `HTTP 302` redirect to the install wizard. `terraform destroy` cleans both volumes when `remove_volumes_on_destroy = true`.
+✅ Tested end-to-end on `2026-04-26` (Terraform 1.14.3, Docker 29.1.5, provider `ritajhq/dockercompose` 1.1.x). `terraform apply` brings both containers to `running`, WordPress responds with `HTTP 302` redirect to the install wizard. `terraform destroy` cleans both volumes when `remove_volumes_on_destroy = true`.
 
 ## Run
 

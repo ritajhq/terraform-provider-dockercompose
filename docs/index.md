@@ -25,7 +25,7 @@ The `dockercompose` provider lets you manage Docker Compose stacks declaratively
 terraform {
   required_providers {
     dockercompose = {
-      source  = "xRizur/dockercompose"
+      source  = "ritajhq/dockercompose"
       version = "~> 1.1"
     }
   }

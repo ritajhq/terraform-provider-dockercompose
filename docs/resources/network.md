@@ -16,7 +16,7 @@ A standalone Docker network, created directly via `docker network create` rather
 terraform {
   required_providers {
     dockercompose = {
-      source  = "xRizur/dockercompose"
+      source  = "ritajhq/dockercompose"
       version = "~> 1.1"
     }
   }

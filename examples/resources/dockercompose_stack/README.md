@@ -40,4 +40,4 @@ terraform destroy
 ## Related
 
 - [`dockercompose_project` example](../dockercompose_project/) — same idea but reading from an existing `docker-compose.yml`
-- [Full attribute reference](https://registry.terraform.io/providers/xRizur/dockercompose/latest/docs/resources/stack)
+- [Full attribute reference](https://registry.terraform.io/providers/ritajhq/dockercompose/latest/docs/resources/stack)

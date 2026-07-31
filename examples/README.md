@@ -1,6 +1,6 @@
 # Examples
 
-Runnable examples for the [`xRizur/dockercompose`](https://registry.terraform.io/providers/xRizur/dockercompose/latest) Terraform provider. Each subfolder is a standalone example — `cd` in, `terraform init`, `terraform apply`.
+Runnable examples for the [`ritajhq/dockercompose`](https://registry.terraform.io/providers/ritajhq/dockercompose/latest) Terraform provider. Each subfolder is a standalone example — `cd` in, `terraform init`, `terraform apply`.
 
 ## End-to-end use cases
 
@@ -43,6 +43,6 @@ The `remote-vps/` example is the only one not fully applied in CI — it require
 
 ## More
 
-- [Provider docs on Terraform Registry](https://registry.terraform.io/providers/xRizur/dockercompose/latest/docs)
+- [Provider docs on Terraform Registry](https://registry.terraform.io/providers/ritajhq/dockercompose/latest/docs)
 - [Top-level README with full reference](../README.md)
-- [Issues / questions](https://github.com/xRizur/terraform-provider-dockercompose/issues)
+- [Issues / questions](https://github.com/ritajhq/terraform-provider-dockercompose/issues)

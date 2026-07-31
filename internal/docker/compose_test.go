@@ -572,7 +572,7 @@ func TestMarshalDevelopWatch(t *testing.T) {
 	assertContains(t, yaml, "action: sync")
 	assertContains(t, yaml, "target: /app/src")
 	assertContains(t, yaml, "- node_modules/")
-	assertContains(t, yaml, "- \"*.log\"")
+	assertContains(t, yaml, "- '*.log'")
 	assertContains(t, yaml, "action: rebuild")
 	assertContains(t, yaml, "action: sync+restart")
 	assertContains(t, yaml, "action: sync+exec")

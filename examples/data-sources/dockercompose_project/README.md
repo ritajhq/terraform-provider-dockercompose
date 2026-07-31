@@ -38,4 +38,4 @@ output "db_ip" {
 
 ## Related
 
-- [Full attribute reference](https://registry.terraform.io/providers/xRizur/dockercompose/latest/docs/data-sources/project)
+- [Full attribute reference](https://registry.terraform.io/providers/ritajhq/dockercompose/latest/docs/data-sources/project)

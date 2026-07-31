@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/xRizur/terraform-provider-dockercompose/internal/docker"
+	"github.com/ritajhq/terraform-provider-dockercompose/internal/docker"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )

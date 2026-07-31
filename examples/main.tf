@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     dockercompose = {
-      source = "xRizur/dockercompose"
+      source = "ritajhq/dockercompose"
     }
   }
 }

@@ -3,7 +3,7 @@ package provider
 import (
 	"fmt"
 
-	"github.com/xRizur/terraform-provider-dockercompose/internal/docker"
+	"github.com/ritajhq/terraform-provider-dockercompose/internal/docker"
 )
 
 // servicesActiveForProfiles returns the names of services in cf that would be started

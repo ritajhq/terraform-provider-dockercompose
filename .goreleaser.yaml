@@ -56,7 +56,7 @@ changelog:
 
 release:
   github:
-    owner: xRizur
+    owner: ritajhq
     name: terraform-provider-dockercompose
 
   # Publish to GitHub Releases

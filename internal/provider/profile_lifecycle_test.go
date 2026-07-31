@@ -4,7 +4,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/xRizur/terraform-provider-dockercompose/internal/docker"
+	"github.com/ritajhq/terraform-provider-dockercompose/internal/docker"
 )
 
 // ============================================================

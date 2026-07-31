@@ -1,13 +1,10 @@
 # Terraform Provider for Docker Compose
 
-> [!NOTE]
-> Forked from [kreuzwerker/docker](https://github.com/xRizur/terraform-provider-dockercompose)
-
-[![Terraform Registry](https://img.shields.io/badge/registry-xRizur%2Fdockercompose-844FBA?logo=terraform)](https://registry.terraform.io/providers/xRizur/dockercompose/latest)
-[![Release](https://img.shields.io/github/v/release/xRizur/terraform-provider-dockercompose?label=release)](https://github.com/xRizur/terraform-provider-dockercompose/releases)
+[![Terraform Registry](https://img.shields.io/badge/registry-ritajhq%2Fdockercompose-844FBA?logo=terraform)](https://registry.terraform.io/providers/ritajhq/dockercompose/latest)
+[![Release](https://img.shields.io/github/v/release/ritajhq/terraform-provider-dockercompose?label=release)](https://github.com/ritajhq/terraform-provider-dockercompose/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/xRizur/terraform-provider-dockercompose)](go.mod)
-[![Stars](https://img.shields.io/github/stars/xRizur/terraform-provider-dockercompose?style=social)](https://github.com/xRizur/terraform-provider-dockercompose/stargazers)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/ritajhq/terraform-provider-dockercompose)](go.mod)
+[![Stars](https://img.shields.io/github/stars/ritajhq/terraform-provider-dockercompose?style=social)](https://github.com/ritajhq/terraform-provider-dockercompose/stargazers)
 
 > Manage Docker Compose stacks as Terraform resources. Define multi-container applications in HCL, deploy them to local or remote Docker hosts via SSH/TCP/Unix socket, and get full lifecycle management with comprehensive Docker Compose v3 spec coverage.
 
@@ -17,7 +14,7 @@ The official Docker provider (`kreuzwerker/docker`) treats every container, netw
 
 This provider takes the opposite approach: **a stack is one resource**. You write HCL that mirrors `docker-compose.yml` 1:1, and the provider runs `docker compose up -d` under the hood — preserving Compose's dependency graph, healthcheck-aware startup, and project isolation.
 
-| | `xRizur/dockercompose` | `kreuzwerker/docker` |
+| | `ritajhq/dockercompose` | `kreuzwerker/docker` |
 |---|---|---|
 | Mental model | Compose stacks | Individual containers |
 | Service dependencies | `depends_on` (Compose-native) | Manual `depends_on` between TF resources |
@@ -59,7 +56,7 @@ This provider takes the opposite approach: **a stack is one resource**. You writ
 terraform {
   required_providers {
     dockercompose = {
-      source = "xRizur/dockercompose"
+      source = "ritajhq/dockercompose"
     }
   }
 }
@@ -622,7 +619,7 @@ Without Go installed, build it in Docker instead:
 ```hcl
 provider_installation {
   dev_overrides {
-    "registry.terraform.io/xRizur/dockercompose" = "C:\\Users\\<you>\\path\\to\\DockerCompose-Terraform-Provider"
+    "registry.terraform.io/ritajhq/dockercompose" = "C:\\Users\\<you>\\path\\to\\DockerCompose-Terraform-Provider"
   }
   direct {}
 }
@@ -633,7 +630,7 @@ provider_installation {
 ```hcl
 provider_installation {
   dev_overrides {
-    "registry.terraform.io/xRizur/dockercompose" = "/home/<you>/path/to/DockerCompose-Terraform-Provider"
+    "registry.terraform.io/ritajhq/dockercompose" = "/home/<you>/path/to/DockerCompose-Terraform-Provider"
   }
   direct {}
 }
@@ -647,7 +644,7 @@ provider_installation {
 terraform {
   required_providers {
     dockercompose = {
-      source = "xRizur/dockercompose"
+      source = "ritajhq/dockercompose"
     }
   }
 }
@@ -722,9 +719,9 @@ Issues and PRs welcome. If you hit a missing Compose field or a behavior that di
 
 ## Links
 
-- **Terraform Registry**: <https://registry.terraform.io/providers/xRizur/dockercompose/latest>
-- **Issue tracker**: <https://github.com/xRizur/terraform-provider-dockercompose/issues>
-- **Releases / changelog**: <https://github.com/xRizur/terraform-provider-dockercompose/releases>
+- **Terraform Registry**: <https://registry.terraform.io/providers/ritajhq/dockercompose/latest>
+- **Issue tracker**: <https://github.com/ritajhq/terraform-provider-dockercompose/issues>
+- **Releases / changelog**: <https://github.com/ritajhq/terraform-provider-dockercompose/releases>
 
 If this provider saved you time, a star on GitHub helps others discover it.
 
