@@ -567,6 +567,8 @@ The data source exposes `driver`, `scope`, `internal`, `attachable`, `labels`, `
 
 All attributes are `ForceNew` — Docker networks can't be modified in place, so any change destroys and recreates the network. Destroying it while a stack still references it externally fails at the engine level ("network has active endpoints"); add `depends_on = [dockercompose_network.x]` on each referencing stack so Terraform tears stacks down first.
 
+See [`examples/resources/dockercompose_network/`](examples/resources/dockercompose_network/) for a fuller example: a shared network, a "platform" stack owning Postgres/Redis, and a separate API/worker stack that reaches them purely by service name.
+
 ## How It Works
 
 1. **Create/Update**: Builds YAML from HCL config (or uses provided YAML), writes to `<project_directory>/<name>/docker-compose.yml`. Resolves `watch`/`active_profiles` (resource override, else provider default) and runs `docker compose -p <name> up -d --remove-orphans [--profile ...]` — or, if watch is resolved to `true` and at least one service has `develop_watch` entries, launches a detached `docker compose -p <name> up -d --watch [--profile ...]` instead. On Update, any previously-dropped `active_profiles` are stopped first, and a running watcher is always killed and respawned.
