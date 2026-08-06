@@ -22,6 +22,7 @@ Smaller, single-feature examples used for the Terraform Registry docs:
 - [`resources/dockercompose_project/`](resources/dockercompose_project/) — wrap an existing `docker-compose.yml` or pass inline YAML
 - [`resources/dockercompose_network/`](resources/dockercompose_network/) — network shared across multiple stacks
 - [`data-sources/dockercompose_project/`](data-sources/dockercompose_project/) — read runtime state of an existing project
+- [`data-sources/dockercompose_network/`](data-sources/dockercompose_network/) — reference a network this config doesn't manage
 
 ## Running an example
 

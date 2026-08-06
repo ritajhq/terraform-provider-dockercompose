@@ -75,7 +75,7 @@ func TestProviderResources(t *testing.T) {
 func TestProviderDataSources(t *testing.T) {
 	p := Provider()
 
-	expectedDataSources := []string{"dockercompose_project"}
+	expectedDataSources := []string{"dockercompose_project", "dockercompose_network"}
 	for _, name := range expectedDataSources {
 		if _, ok := p.DataSourcesMap[name]; !ok {
 			t.Errorf("provider missing data source %q", name)

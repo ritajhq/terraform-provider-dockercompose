@@ -57,6 +57,7 @@ func Provider() *schema.Provider {
 		},
 		DataSourcesMap: map[string]*schema.Resource{
 			"dockercompose_project": dataSourceComposeProject(),
+			"dockercompose_network": dataSourceComposeNetwork(),
 		},
 		ConfigureFunc: providerConfigure,
 	}

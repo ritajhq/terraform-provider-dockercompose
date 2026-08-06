@@ -124,9 +124,7 @@ func resourceNetworkRead(d *schema.ResourceData, m interface{}) error {
 		return fmt.Errorf("error inspecting network %q: %s", name, err)
 	}
 
-	var inspected []struct {
-		Name string `json:"Name"`
-	}
+	var inspected []networkInspectEntry
 	if err := json.Unmarshal([]byte(out), &inspected); err != nil {
 		return fmt.Errorf("error parsing network inspect output for %q: %s", name, err)
 	}
