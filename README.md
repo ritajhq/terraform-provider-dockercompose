@@ -270,6 +270,7 @@ service {
   read_only    = true
   init         = true
   user         = "1000:1000"
+  group_add    = ["1001", "shared-group"]
 
   # Networking
   dns          = ["8.8.8.8"]

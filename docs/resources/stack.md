@@ -239,6 +239,7 @@ Optional:
 - `environment` (Map of String) Environment variables.
 - `expose` (List of String) Expose ports without publishing to host.
 - `extra_hosts` (List of String) Extra /etc/hosts entries (hostname:ip).
+- `group_add` (List of String) Additional groups the container process should join.
 - `healthcheck_disable` (Boolean) Disable healthcheck.
 - `healthcheck_interval` (String) Healthcheck interval (e.g. '30s').
 - `healthcheck_retries` (Number) Healthcheck max retries.

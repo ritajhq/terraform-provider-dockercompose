@@ -362,6 +362,9 @@ func TestBuildComposeFileServiceWithSecurityOptions(t *testing.T) {
 		"service.0.privileged":     "true",
 		"service.0.read_only":      "true",
 		"service.0.user":           "1000:1000",
+		"service.0.group_add.#":    "2",
+		"service.0.group_add.0":    "1001",
+		"service.0.group_add.1":    "shared-group",
 	})
 
 	cf := buildComposeFile(d)
@@ -384,6 +387,9 @@ func TestBuildComposeFileServiceWithSecurityOptions(t *testing.T) {
 	}
 	if svc.User != "1000:1000" {
 		t.Errorf("expected user=1000:1000, got %s", svc.User)
+	}
+	if len(svc.GroupAdd) != 2 || svc.GroupAdd[0] != "1001" || svc.GroupAdd[1] != "shared-group" {
+		t.Errorf("expected group_add [1001, shared-group], got %v", svc.GroupAdd)
 	}
 }
 
@@ -1021,6 +1027,7 @@ func TestBuildComposeFileEmptyOptionalFields(t *testing.T) {
 		"logging:",
 		"cap_add:",
 		"cap_drop:",
+		"group_add:",
 		"privileged:",
 		"read_only:",
 		"dns:",

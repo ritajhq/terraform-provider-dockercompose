@@ -214,7 +214,7 @@ func TestStackServiceSchemaComprehensive(t *testing.T) {
 		"logging_driver", "logging_options",
 		// Security
 		"cap_add", "cap_drop", "security_opt", "privileged", "read_only",
-		"init", "user",
+		"init", "user", "group_add",
 		// Networking
 		"dns", "extra_hosts", "hostname", "domainname", "network_mode",
 		// Runtime
@@ -242,7 +242,7 @@ func TestStackServiceSchemaComprehensive(t *testing.T) {
 	listFields := []string{
 		"ports", "expose", "depends_on", "env_file", "command", "entrypoint",
 		"volumes", "networks", "healthcheck_test", "cap_add", "cap_drop",
-		"security_opt", "dns", "extra_hosts", "tmpfs", "devices", "profiles",
+		"security_opt", "group_add", "dns", "extra_hosts", "tmpfs", "devices", "profiles",
 	}
 	for _, field := range listFields {
 		if ss[field].Type != schema.TypeList {

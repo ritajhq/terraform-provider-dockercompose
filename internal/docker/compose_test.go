@@ -80,6 +80,7 @@ func TestMarshalFullService(t *testing.T) {
 				ReadOnly:        true,
 				Init:            &initTrue,
 				User:            "1000:1000",
+				GroupAdd:        []string{"shared-group"},
 				DNS:             []string{"8.8.8.8"},
 				ExtraHosts:      []string{"host.docker.internal:host-gateway"},
 				Hostname:        "api",
@@ -143,6 +144,7 @@ func TestMarshalFullService(t *testing.T) {
 		"read_only: true",
 		"init: true",
 		"user: 1000:1000",
+		"- shared-group",
 		"- 8.8.8.8",
 		"- host.docker.internal:host-gateway",
 		"hostname: api",
@@ -346,9 +348,10 @@ func TestMarshalUnmarshalRoundTrip(t *testing.T) {
 					Interval: "10s",
 					Retries:  &retries,
 				},
-				Init:    &initTrue,
-				CapAdd:  []string{"NET_ADMIN"},
-				CapDrop: []string{"ALL"},
+				Init:     &initTrue,
+				CapAdd:   []string{"NET_ADMIN"},
+				CapDrop:  []string{"ALL"},
+				GroupAdd: []string{"shared-group"},
 			},
 		},
 		Networks: map[string]*NetworkConfig{
@@ -395,6 +398,9 @@ func TestMarshalUnmarshalRoundTrip(t *testing.T) {
 	if len(app.CapAdd) != 1 || app.CapAdd[0] != "NET_ADMIN" {
 		t.Errorf("CapAdd = %v, want [NET_ADMIN]", app.CapAdd)
 	}
+	if len(app.GroupAdd) != 1 || app.GroupAdd[0] != "shared-group" {
+		t.Errorf("GroupAdd = %v, want [shared-group]", app.GroupAdd)
+	}
 }
 
 func TestMarshalOmitsEmptyFields(t *testing.T) {
@@ -419,7 +425,7 @@ func TestMarshalOmitsEmptyFields(t *testing.T) {
 		"container_name:", "restart:", "ports:", "expose:", "depends_on:",
 		"environment:", "env_file:", "command:", "entrypoint:", "volumes:",
 		"labels:", "deploy:", "healthcheck:", "logging:", "cap_add:", "cap_drop:",
-		"security_opt:", "privileged:", "read_only:", "init:", "user:",
+		"security_opt:", "privileged:", "read_only:", "init:", "user:", "group_add:",
 		"dns:", "extra_hosts:", "hostname:", "domainname:", "network_mode:",
 		"working_dir:", "stdin_open:", "tty:", "shm_size:", "stop_grace_period:",
 		"stop_signal:", "platform:", "pull_policy:", "runtime:", "tmpfs:",

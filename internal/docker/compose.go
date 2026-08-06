@@ -33,6 +33,7 @@ type ServiceConfig struct {
 	Logging         *LoggingConfig    `yaml:"logging,omitempty"`
 	CapAdd          []string          `yaml:"cap_add,omitempty"`
 	CapDrop         []string          `yaml:"cap_drop,omitempty"`
+	GroupAdd        []string          `yaml:"group_add,omitempty"`
 	SecurityOpt     []string          `yaml:"security_opt,omitempty"`
 	Privileged      bool              `yaml:"privileged,omitempty"`
 	ReadOnly        bool              `yaml:"read_only,omitempty"`

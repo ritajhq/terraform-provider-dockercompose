@@ -182,6 +182,7 @@ func serviceSchema() map[string]*schema.Schema {
 		"read_only":    {Type: schema.TypeBool, Optional: true, Default: false, Description: "Mount root filesystem as read-only."},
 		"init":         {Type: schema.TypeBool, Optional: true, Default: false, Description: "Run init process inside the container."},
 		"user":         {Type: schema.TypeString, Optional: true, Description: "User to run as (user:group)."},
+		"group_add":    {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}, Description: "Additional groups the container process should join."},
 
 		// --- Networking ---
 		"dns":          {Type: schema.TypeList, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}, Description: "Custom DNS servers."},
@@ -533,6 +534,7 @@ func buildComposeFile(d *schema.ResourceData) *docker.ComposeFile {
 			ReadOnly:        getBool(svc, "read_only"),
 			Init:            getBoolPtr(svc, "init"),
 			User:            getStr(svc, "user"),
+			GroupAdd:        getStrList(svc, "group_add"),
 			DNS:             getStrList(svc, "dns"),
 			ExtraHosts:      getStrList(svc, "extra_hosts"),
 			Hostname:        getStr(svc, "hostname"),
