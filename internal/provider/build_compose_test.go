@@ -627,6 +627,8 @@ func TestBuildComposeFileWithExternalNetwork(t *testing.T) {
 }
 
 func TestBuildComposeFileWithExternalNetworkName(t *testing.T) {
+	// external is deliberately omitted here: setting external_name alone must
+	// imply external = true, without also requiring external = "true".
 	d := makeResourceData(t, map[string]string{
 		"name":                    "test-ext-net-name",
 		"service.#":               "1",
@@ -634,7 +636,6 @@ func TestBuildComposeFileWithExternalNetworkName(t *testing.T) {
 		"service.0.image":         "nginx:latest",
 		"network.#":               "1",
 		"network.0.name":          "shared_net",
-		"network.0.external":      "true",
 		"network.0.external_name": "shared_net",
 	})
 
@@ -642,7 +643,7 @@ func TestBuildComposeFileWithExternalNetworkName(t *testing.T) {
 	net := cf.Networks["shared_net"]
 
 	if !net.External {
-		t.Error("expected external=true")
+		t.Error("expected external_name to imply external=true")
 	}
 	if net.Name != "shared_net" {
 		t.Errorf("expected Name=shared_net, got %q", net.Name)

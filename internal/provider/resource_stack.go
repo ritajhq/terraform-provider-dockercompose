@@ -265,10 +265,10 @@ func developWatchSchema() map[string]*schema.Schema {
 func networkSchema() map[string]*schema.Schema {
 	return map[string]*schema.Schema{
 		"name":          {Type: schema.TypeString, Required: true, Description: "Network key within the compose file."},
-		"external_name": {Type: schema.TypeString, Optional: true, Description: "Literal Docker network name to use (Compose's top-level `name:` field), bypassing the `<project>_` prefix. Set this to the `name` of a dockercompose_network resource when joining a network shared across stacks (combine with external = true)."},
+		"external_name": {Type: schema.TypeString, Optional: true, Description: "Literal Docker network name to use (Compose's top-level `name:` field), bypassing the `<project>_` prefix. Set this to the `name` of a dockercompose_network resource or dockercompose_network data source when joining a network shared across stacks or created outside this stack. Implies external = true — no need to set that separately."},
 		"driver":        {Type: schema.TypeString, Optional: true, Description: "Network driver (bridge, overlay, host, none)."},
 		"driver_opts":   {Type: schema.TypeMap, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}, Description: "Driver-specific options."},
-		"external":      {Type: schema.TypeBool, Optional: true, Default: false, Description: "Use externally created network."},
+		"external":      {Type: schema.TypeBool, Optional: true, Default: false, Description: "Use externally created network. Implied automatically when external_name is set."},
 		"internal":      {Type: schema.TypeBool, Optional: true, Default: false, Description: "Restrict external access."},
 		"attachable":    {Type: schema.TypeBool, Optional: true, Default: false, Description: "Allow manual container attachment."},
 		"labels":        {Type: schema.TypeMap, Optional: true, Elem: &schema.Schema{Type: schema.TypeString}, Description: "Network labels."},
@@ -640,12 +640,17 @@ func buildComposeFile(d *schema.ResourceData) *docker.ComposeFile {
 		for _, raw := range rawNets.([]interface{}) {
 			net := raw.(map[string]interface{})
 			name := net["name"].(string)
+			externalName := getStr(net, "external_name")
+
+			// external_name only makes sense for a network this stack doesn't own,
+			// so setting it implies external = true without writing that out too.
+			isExternal := getBool(net, "external") || externalName != ""
 
 			nc := &docker.NetworkConfig{
-				Name:       getStr(net, "external_name"),
+				Name:       externalName,
 				Driver:     getStr(net, "driver"),
 				DriverOpts: getStrMap(net, "driver_opts"),
-				External:   getBool(net, "external"),
+				External:   isExternal,
 				Internal:   getBool(net, "internal"),
 				Attachable: getBool(net, "attachable"),
 				Labels:     getStrMap(net, "labels"),

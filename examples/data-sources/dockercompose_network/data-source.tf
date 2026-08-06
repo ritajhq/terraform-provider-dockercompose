@@ -16,8 +16,8 @@ data "dockercompose_network" "edge" {
 }
 
 # Join it from a stack by pointing external_name at the looked-up name.
-# external must still be true: this stack does not own the network's
-# lifecycle, it only attaches to it.
+# Setting external_name implies external = true: this stack does not own the
+# network's lifecycle, it only attaches to it.
 resource "dockercompose_stack" "api" {
   name = "api-stack"
 
@@ -29,7 +29,6 @@ resource "dockercompose_stack" "api" {
 
   network {
     name          = "edge"
-    external      = true
     external_name = data.dockercompose_network.edge.name
   }
 }

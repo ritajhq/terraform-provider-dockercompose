@@ -10,7 +10,7 @@ description: |-
 
 Looks up an existing Docker network by name and exposes its attributes. Use this to reference a network that this Terraform config doesn't manage — created by another team, a bootstrap script, or `docker network create` run directly — instead of a [`dockercompose_network`](../resources/network.md) resource. The lookup fails at plan/apply time if the network doesn't exist.
 
-The most common use is feeding the looked-up name into a [`dockercompose_stack`](../resources/stack.md)'s `network` block via `external_name`, so the stack joins the network without owning its lifecycle.
+The most common use is feeding the looked-up name into a [`dockercompose_stack`](../resources/stack.md)'s `network` block via `external_name` (which implies `external = true`), so the stack joins the network without owning its lifecycle.
 
 ## Example Usage
 
@@ -39,7 +39,6 @@ resource "dockercompose_stack" "api" {
 
   network {
     name          = "edge"
-    external      = true
     external_name = data.dockercompose_network.edge.name
   }
 }

@@ -19,8 +19,8 @@ resource "dockercompose_network" "shared" {
   ipam_gateway = "172.28.0.1"
 }
 
-# Each stack joins the shared network by declaring it as external and
-# pointing external_name at the literal Docker network name above. Without
+# Each stack joins the shared network by pointing external_name at the
+# literal Docker network name above (this implies external = true). Without
 # external_name, Compose would prefix the network with "<project>_" and each
 # stack would end up with its own private network of the same short name.
 resource "dockercompose_stack" "api" {
@@ -34,7 +34,6 @@ resource "dockercompose_stack" "api" {
 
   network {
     name          = "shared_net"
-    external      = true
     external_name = dockercompose_network.shared.name
   }
 
@@ -52,7 +51,6 @@ resource "dockercompose_stack" "worker" {
 
   network {
     name          = "shared_net"
-    external      = true
     external_name = dockercompose_network.shared.name
   }
 

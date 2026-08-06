@@ -8,7 +8,7 @@ description: |-
 
 # dockercompose_network (Resource)
 
-A standalone Docker network, created directly via `docker network create` rather than through any `dockercompose_stack`'s compose project. Use this when a network needs to be shared across multiple stacks: Compose prefixes every network declared inside a stack with `<project>_`, so two stacks can't join "the same" network just by declaring matching `network` blocks. Create the network here instead, then join it from each stack's `network` block with `external = true` and `external_name` set to this resource's `name`.
+A standalone Docker network, created directly via `docker network create` rather than through any `dockercompose_stack`'s compose project. Use this when a network needs to be shared across multiple stacks: Compose prefixes every network declared inside a stack with `<project>_`, so two stacks can't join "the same" network just by declaring matching `network` blocks. Create the network here instead, then join it from each stack's `network` block by setting `external_name` to this resource's `name` (this implies `external = true`, no need to set that separately).
 
 ## Example Usage
 
@@ -42,7 +42,6 @@ resource "dockercompose_stack" "api" {
 
   network {
     name          = "shared_net"
-    external      = true
     external_name = dockercompose_network.shared.name
   }
 
@@ -60,7 +59,6 @@ resource "dockercompose_stack" "worker" {
 
   network {
     name          = "shared_net"
-    external      = true
     external_name = dockercompose_network.shared.name
   }
 
